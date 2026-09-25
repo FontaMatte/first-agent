@@ -24,6 +24,7 @@ response = client.chat.completions.create(
 )
 
 # 6. Stampa l'oggetto risposta COMPLETO
-print(response.choices[0].message.content)
+print(response.model_dump_json(indent=2))
 
 # 7. Stampa solo il testo della risposta
+print(response.choices[0].message.content)
