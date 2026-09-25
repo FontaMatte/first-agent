@@ -19,6 +19,7 @@ client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
 response = client.chat.completions.create(
     model="mistralai/ministral-14b-2512",
     messages=[
+        {"role": "system", "content": "rispondi come un pirata"},
         {"role": "user", "content": "Ciao, chi sei?"}
     ]
 )
