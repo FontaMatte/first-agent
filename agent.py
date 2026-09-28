@@ -19,3 +19,19 @@ def get_current_datetime():
     current_datetime = datetime.now()
     return current_datetime.strftime("%d/%m/%Y %H:%M")
 
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_current_datetime",
+            "description":  
+                "Returns the current local date and time in the format DD/MM/YYYY HH:MM. " ""
+                "Use it whenever the user asks about today's date, the current time or day of the week, or when a question requires knowing the current date (for example, calculating how many days are left until an event). " 
+                "You do not know the current date or time on your own, so always use this tool instead of guessing.",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+            },
+        },
+    },
+]
