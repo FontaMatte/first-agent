@@ -35,3 +35,14 @@ tools = [
         },
     },
 ]
+
+response = client.chat.completions.create(
+    model="mistralai/ministral-14b-2512",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant. When a question requires information you don't have, use the available tools instead of guessing. Always answer in Italian, clearly and concisely."},
+        {"role": "user", "content": "Che giorno è oggi?"},
+    ],
+    tools=tools
+)
+
+print(response.model_dump_json(indent=2))
