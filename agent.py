@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from datetime import datetime
 
+MAX_ITERATIONS = 5
+
 load_dotenv()
 api_key = os.getenv("OPENROUTER_API_KEY")
 
@@ -25,7 +27,7 @@ tools = [
         "function": {
             "name": "get_current_datetime",
             "description":  
-                "Returns the current local day of the week, date and time in the format Weekday DD/MM/YYYY HH:MM. (for example: Wednesday 30/09/2026 10:11). "
+                "Returns the current local day of the week, date and time in the format Weekday DD/MM/YYYY HH:MM (for example: Wednesday 30/09/2026 10:11). "
                 "Use it whenever the user asks about today's date, the current time or day of the week, or when a question requires knowing the current date (for example, calculating how many days are left until an event). " 
                 "You do not know the current date or time on your own, so always use this tool instead of guessing.",
             "parameters": {
@@ -42,34 +44,25 @@ available_tools = {
 
 messages = [
     {"role": "system", "content": "You are a helpful assistant. When a question requires information you don't have, use the available tools instead of guessing. Always answer in Italian, clearly and concisely."},
-    {"role": "user", "content": "Che giorno della settimana è oggi?"},
+    {"role": "user", "content": "Ciao!"},
 ]
 
-response = client.chat.completions.create(
-    model="mistralai/ministral-14b-2512",
-    messages=messages,
-    tools=tools,
-)
+for iteration in range(MAX_ITERATIONS):
 
-tool_call = response.choices[0].message.tool_calls[0]
-tool_name = tool_call.function.name
+    print(f"--- Iterazione {iteration + 1} ---")
 
-tool_function = available_tools[tool_name]
-tool_result = tool_function()
+    response = client.chat.completions.create(
+        model="mistralai/ministral-14b-2512",
+        messages=messages,
+        tools=tools,
+    )
 
-messages.append(response.choices[0].message)
+    assistant_message = response.choices[0].message
 
-messages.append({
-    "role": "tool",
-    "tool_call_id": tool_call.id,
-    "content": tool_result,
-})
+    messages.append(assistant_message)
 
-final_response = client.chat.completions.create(
-    model="mistralai/ministral-14b-2512",
-    messages=messages,
-    tools=tools,
-)
+    if not assistant_message.tool_calls:
+        print(assistant_message.content)
+        break
 
-print(final_response.choices[0].message.content)
 
