@@ -17,7 +17,7 @@ client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
 
 def get_current_datetime():
     current_datetime = datetime.now()
-    return current_datetime.strftime("%d/%m/%Y %H:%M")
+    return current_datetime.strftime("%A %d/%m/%Y %H:%M")
 
 tools = [
     {
@@ -25,7 +25,7 @@ tools = [
         "function": {
             "name": "get_current_datetime",
             "description":  
-                "Returns the current local date and time in the format DD/MM/YYYY HH:MM. "
+                "Returns the current local day of the week, date and time in the format Weekday DD/MM/YYYY HH:MM. (for example: Wednesday 30/09/2026 10:11). "
                 "Use it whenever the user asks about today's date, the current time or day of the week, or when a question requires knowing the current date (for example, calculating how many days are left until an event). " 
                 "You do not know the current date or time on your own, so always use this tool instead of guessing.",
             "parameters": {
@@ -42,7 +42,7 @@ available_tools = {
 
 messages = [
     {"role": "system", "content": "You are a helpful assistant. When a question requires information you don't have, use the available tools instead of guessing. Always answer in Italian, clearly and concisely."},
-    {"role": "user", "content": "Che giorno è oggi?"},
+    {"role": "user", "content": "Che giorno della settimana è oggi?"},
 ]
 
 response = client.chat.completions.create(
@@ -70,4 +70,6 @@ final_response = client.chat.completions.create(
     messages=messages,
     tools=tools,
 )
+
+print(final_response.choices[0].message.content)
 
