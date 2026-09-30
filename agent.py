@@ -66,3 +66,18 @@ for iteration in range(MAX_ITERATIONS):
         break
 
 
+    for tool_call in assistant_message.tool_calls:
+
+        tool_name = tool_call.function.name
+        print(f"Tool richiesto: {tool_name}")
+
+        tool_function = available_tools[tool_name]
+        tool_result = tool_function()
+
+        messages.append({
+            "role": "tool",
+            "tool_call_id": tool_call.id,
+            "content": tool_result
+        })
+
+
