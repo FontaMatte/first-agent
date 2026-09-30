@@ -1,4 +1,5 @@
 import os
+import json
 from dotenv import load_dotenv
 from openai import OpenAI
 from datetime import datetime
@@ -70,8 +71,6 @@ tools = [
     },
 ]
 
-print(tools)
-exit()
 
 available_tools = {
     "get_current_datetime": get_current_datetime,
@@ -80,7 +79,7 @@ available_tools = {
 
 messages = [
     {"role": "system", "content": "You are a helpful assistant. When a question requires information you don't have, use the available tools instead of guessing. Always answer in Italian, clearly and concisely."},
-    {"role": "user", "content": "Che giorno è oggi?"},
+    {"role": "user", "content": "Quanti giorni mancano a Natale?"},
 ]
 
 for iteration in range(MAX_ITERATIONS):
@@ -107,13 +106,15 @@ for iteration in range(MAX_ITERATIONS):
         tool_name = tool_call.function.name
         print(f"Tool richiesto: {tool_name}")
 
+        arguments = json.loads(tool_call.function.arguments)
+
         tool_function = available_tools[tool_name]
-        tool_result = tool_function()
+        tool_result = tool_function(**arguments)
 
         messages.append({
             "role": "tool",
             "tool_call_id": tool_call.id,
-            "content": tool_result
+            "content": str(tool_result)
         })
 
 else:
