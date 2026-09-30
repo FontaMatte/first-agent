@@ -25,7 +25,7 @@ tools = [
         "function": {
             "name": "get_current_datetime",
             "description":  
-                "Returns the current local date and time in the format DD/MM/YYYY HH:MM. " ""
+                "Returns the current local date and time in the format DD/MM/YYYY HH:MM. "
                 "Use it whenever the user asks about today's date, the current time or day of the week, or when a question requires knowing the current date (for example, calculating how many days are left until an event). " 
                 "You do not know the current date or time on your own, so always use this tool instead of guessing.",
             "parameters": {
@@ -36,13 +36,32 @@ tools = [
     },
 ]
 
+available_tools = {
+    "get_current_datetime": get_current_datetime,
+}
+
+messages = [
+    {"role": "system", "content": "You are a helpful assistant. When a question requires information you don't have, use the available tools instead of guessing. Always answer in Italian, clearly and concisely."},
+    {"role": "user", "content": "Che giorno è oggi?"},
+]
+
 response = client.chat.completions.create(
     model="mistralai/ministral-14b-2512",
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant. When a question requires information you don't have, use the available tools instead of guessing. Always answer in Italian, clearly and concisely."},
-        {"role": "user", "content": "Che giorno è oggi?"},
-    ],
-    tools=tools
+    messages=messages,
+    tools=tools,
 )
 
-print(response.model_dump_json(indent=2))
+tool_call = response.choices[0].message.tool_calls[0]
+tool_name = tool_call.function.name
+
+tool_function = available_tools[tool_name]
+tool_result = tool_function()
+
+messages.append(response.choices[0].message)
+
+messages.append({
+    "role": "tool",
+    "tool_call_id": tool_call.id,
+    "content": tool_result,
+})
+
