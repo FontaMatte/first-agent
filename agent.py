@@ -10,10 +10,10 @@ api_key = os.getenv("OPENROUTER_API_KEY")
 
 if not api_key:
     raise ValueError(
-    "Variabile OPENROUTER_API_KEY non trovata. "
-    "Controlla che il file .env esista nella cartella del progetto "
-    "e contenga la riga OPENROUTER_API_KEY=la-tua-chiave"
-)
+        "Variabile OPENROUTER_API_KEY non trovata. "
+        "Controlla che il file .env esista nella cartella del progetto "
+        "e contenga la riga OPENROUTER_API_KEY=la-tua-chiave"
+    )
 
 client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
 
@@ -26,7 +26,7 @@ def days_between_dates(start_date: str, end_date: str) -> int:
     end = datetime.strptime(end_date, "%d/%m/%Y")
     difference = end - start
     return difference.days
-    
+
 
 tools = [
     {
@@ -43,10 +43,39 @@ tools = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "days_between_dates",
+            "description": 
+                "Returns the number of days between two dates, as an integer. "
+                "The result is positive if end_date is after start_date, and negative if it is before. "
+                "Use it whenever the user asks how many days are left until a date or how many days have passed since a date. "
+                "If one of the two dates is today, first call get_current_datetime to get the current date: never guess it.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "start_date": {
+                        "type": "string",
+                        "description": "The starting date, in the format DD/MM/YYYY (for example: 30/09/2026)."
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "description": "The ending date, in the format DD/MM/YYYY (for example: 25/12/2026)."
+                    },
+                },
+                "required": ["start_date", "end_date"],
+            },
+        },
+    },
 ]
+
+print(tools)
+exit()
 
 available_tools = {
     "get_current_datetime": get_current_datetime,
+    "days_between_dates": days_between_dates,
 }
 
 messages = [
