@@ -65,3 +65,9 @@ messages.append({
     "content": tool_result,
 })
 
+final_response = client.chat.completions.create(
+    model="mistralai/ministral-14b-2512",
+    messages=messages,
+    tools=tools,
+)
+
