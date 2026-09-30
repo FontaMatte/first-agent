@@ -17,12 +17,14 @@ if not api_key:
 
 client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
 
-def get_current_datetime():
+def get_current_datetime() -> str:
     current_datetime = datetime.now()
     return current_datetime.strftime("%A %d/%m/%Y %H:%M")
 
-def days_between_dates(start_date: str, end_date:str) -> int:
-    difference = datetime.strptime(end_date, "%d/%m/%Y") - datetime.strptime(start_date, "%d/%m/%Y")
+def days_between_dates(start_date: str, end_date: str) -> int:
+    start = datetime.strptime(start_date, "%d/%m/%Y")
+    end = datetime.strptime(end_date, "%d/%m/%Y")
+    difference = end - start
     return difference.days
     
 
