@@ -44,7 +44,7 @@ available_tools = {
 
 messages = [
     {"role": "system", "content": "You are a helpful assistant. When a question requires information you don't have, use the available tools instead of guessing. Always answer in Italian, clearly and concisely."},
-    {"role": "user", "content": "Ciao!"},
+    {"role": "user", "content": "Che giorno è oggi?"},
 ]
 
 for iteration in range(MAX_ITERATIONS):
@@ -80,4 +80,6 @@ for iteration in range(MAX_ITERATIONS):
             "content": tool_result
         })
 
+else:
+    print(f"L'agente ha raggiunto il limite di {MAX_ITERATIONS} iterazioni senza arrivare a una risposta finale.")
 
