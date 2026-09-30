@@ -21,6 +21,11 @@ def get_current_datetime():
     current_datetime = datetime.now()
     return current_datetime.strftime("%A %d/%m/%Y %H:%M")
 
+def days_between_dates(start_date: str, end_date:str) -> int:
+    difference = datetime.strptime(end_date, "%d/%m/%Y") - datetime.strptime(start_date, "%d/%m/%Y")
+    return difference.days
+    
+
 tools = [
     {
         "type": "function",
