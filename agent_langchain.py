@@ -1,11 +1,9 @@
-import json
 from datetime import datetime
 
 from dotenv import load_dotenv
-from langchain.tools import tool
-from langchain_core.utils.function_calling import convert_to_openai_tool
-from langchain_openrouter import ChatOpenRouter
 from langchain.agents import create_agent
+from langchain.tools import tool
+from langchain_openrouter import ChatOpenRouter
 
 load_dotenv()
 
@@ -59,4 +57,5 @@ result = agent.invoke(
     }
 )
 
-print(result['messages'][-1].content)
+for message in result["messages"]:
+    message.pretty_print()
