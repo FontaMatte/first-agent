@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_openrouter import ChatOpenRouter
+from langgraph.errors import GraphRecursionError
 
 load_dotenv()
 
@@ -49,13 +50,17 @@ agent = create_agent(
     system_prompt="You are a helpful assistant. When a question requires information you don't have, use the available tools instead of guessing. Always answer in Italian, clearly and concisely."
 )
 
-result = agent.invoke(
-    {
-        "messages": [
-            {"role": "user", "content": "Quanti giorni mancano a Natale?"}
-        ]
-    }
-)
+try:
+    result = agent.invoke(
+        {
+            "messages": [
+                {"role": "user", "content": "Quanti giorni mancano a Natale?"}
+            ]
+        },
+    )
 
-for message in result["messages"]:
-    message.pretty_print()
+    for message in result["messages"]:
+        message.pretty_print()
+
+except GraphRecursionError:
+    print(f"L'agente ha raggiunto il limite massimo di iterazioni senza arrivare a una risposta finale.")
