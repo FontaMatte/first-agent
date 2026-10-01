@@ -63,4 +63,4 @@ try:
         message.pretty_print()
 
 except GraphRecursionError:
-    print(f"L'agente ha raggiunto il limite massimo di iterazioni senza arrivare a una risposta finale.")
+    print("L'agente ha raggiunto il limite massimo di iterazioni senza arrivare a una risposta finale.")
