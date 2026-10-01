@@ -5,11 +5,11 @@ from dotenv import load_dotenv
 from langchain.tools import tool
 from langchain_core.utils.function_calling import convert_to_openai_tool
 from langchain_openrouter import ChatOpenRouter
+from langchain.agents import create_agent
 
 load_dotenv()
 
 model = ChatOpenRouter(model="mistralai/ministral-14b-2512")
-
 
 @tool(parse_docstring=True)
 def get_current_datetime() -> str:
@@ -44,14 +44,10 @@ def days_between_dates(start_date: str, end_date: str) -> int:
     return difference.days
 
 
-# --- Verifiche del passo 2.2 ---
 
-print("=== Schema generato da LangChain ===")
-schema = convert_to_openai_tool(days_between_dates)
-print(json.dumps(schema, indent=2))
-
-print("=== Esecuzione del tool con invoke ===")
-result = days_between_dates.invoke(
-    {"start_date": "30/09/2026", "end_date": "25/12/2026"}
+agent = create_agent(
+    model=model, 
+    tools=[get_current_datetime, days_between_dates],
+    system_prompt="You are a helpful assistant. When a question requires information you don't have, use the available tools instead of guessing. Always answer in Italian, clearly and concisely."
 )
-print(result)
+
