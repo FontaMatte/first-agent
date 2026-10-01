@@ -51,3 +51,12 @@ agent = create_agent(
     system_prompt="You are a helpful assistant. When a question requires information you don't have, use the available tools instead of guessing. Always answer in Italian, clearly and concisely."
 )
 
+result = agent.invoke(
+    {
+        "messages": [
+            {"role": "user", "content": "Quanti giorni mancano a Natale?"}
+        ]
+    }
+)
+
+print(result['messages'][-1].content)
